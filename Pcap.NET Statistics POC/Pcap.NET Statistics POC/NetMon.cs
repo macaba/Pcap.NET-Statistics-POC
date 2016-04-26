@@ -5,10 +5,10 @@ namespace Pcap.NET_Statistics_POC
 {
     public class NetMon
     {
+        CancellationTokenSource cnx = new CancellationTokenSource();
+
         public void Start()
         {
-            var cnx = new CancellationTokenSource();
-
             var localMonitor = new Monitor("LOC");
             localMonitor.Connect(Properties.Settings.Default.LocalAdapter);
             localMonitor.GetStats($"dst net {Properties.Settings.Default.LocalNet}", cnx);
@@ -16,8 +16,10 @@ namespace Pcap.NET_Statistics_POC
             var remoteMonitor = new Monitor("REM");
             remoteMonitor.Connect(Properties.Settings.Default.LocalAdapter);
             remoteMonitor.GetStats($"not dst net {Properties.Settings.Default.LocalNet}", cnx);
+        }
 
-            Console.ReadKey();
+        public void Stop()
+        {
             cnx.Cancel();
         }
     }
